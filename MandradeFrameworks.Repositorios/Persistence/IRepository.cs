@@ -7,7 +7,7 @@ namespace MandradeFrameworks.Repositorios.Persistence
     /// <summary>
     /// Interface com o intuito de marcar a classe como repositório
     /// </summary>
-    interface IRepository
+    public interface IRepository
     {
     }
 }

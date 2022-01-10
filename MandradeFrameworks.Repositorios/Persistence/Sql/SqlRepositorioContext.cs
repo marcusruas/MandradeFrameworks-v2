@@ -10,9 +10,9 @@ using System.Linq;
 
 namespace MandradeFrameworks.Repositorios.Persistence.Sql
 {
-    public abstract class SqlRepositorio<TContext> : SqlRepositorio where TContext : DbContext
+    public abstract class SqlRepositorio<TContext> : SqlRepositorio where TContext : StandardContext
     {
-        public SqlRepositorio(IMensageria mensageria, TContext context) : base(mensageria)
+        public SqlRepositorio(IServiceProvider provider, TContext context) : base(provider)
         {
             _context = context;
         }

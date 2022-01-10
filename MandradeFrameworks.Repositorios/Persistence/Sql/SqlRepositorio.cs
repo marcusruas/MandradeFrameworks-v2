@@ -1,6 +1,8 @@
 ﻿using MandradeFrameworks.Mensagens;
 using MandradeFrameworks.Mensagens.Models;
+using MandradeFrameworks.Repositorios.Helpers;
 using MandradeFrameworks.Repositorios.Models;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,15 +16,18 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql
 {
     public abstract class SqlRepositorio : IRepository
     {
-        public SqlRepositorio(IMensageria mensageria)
+        public SqlRepositorio(IServiceProvider provider)
         {
-            _mensageria = mensageria;
+            _mensageria = ObterServico<IMensageria>(provider);
+            _configuration = ObterServico<IConfiguration>(provider);
 
-            PASTA_PADRAO_PROJETO = this.GetType().Assembly.CodeBase;
+            PASTA_PADRAO_PROJETO = GetType().Assembly.CodeBase;
             DefinirSqlPath();
         }
 
         protected readonly IMensageria _mensageria;
+
+        private readonly IConfiguration _configuration;
         private string _sqlFolderPath;
 
         private const string CAMADA_PADRAO_REPOSITORIOS = "Infrastructure";
@@ -75,7 +80,8 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql
         /// <summary>
         /// Executa uma função feita pelo usuário com o intuito de obter dados do banco de dados cuja <see cref="SqlConnection"/> aponta.
         /// 
-        /// Caso ocorra algum erro (exception) na função, será adicionado uma mensagem do tipo <see cref="TipoMensagem.Erro"/> no objeto de mensageria e nenhuma outra ação será realizada.
+        /// Caso ocorra algum erro (exception) na função, será adicionado uma mensagem do tipo <see cref="TipoMensagem.Erro"/> no objeto 
+        /// de mensageria e nenhuma outra ação será realizada.
         /// </summary>
         /// <param name="funcao">a função que será executada para passar comandos para o banco de dados</param>
         /// <returns>Uma task com o resultado da função.</returns>
@@ -102,48 +108,27 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql
 
         }
 
+        private SqlConnection ObterConexaoSql(string nomeBanco)
+        {
+            var cnnHelper = new ConnectionStringHelper(_configuration, _mensageria);
+            var connectionString = cnnHelper.ObterConnectionString(nomeBanco);
+
+            if (_mensageria.PossuiErros())
+                return null;
+
+            return new SqlConnection(connectionString);
+        }
+
         private void DefinirSqlPath()
         {
-            var namespaces = this.GetType().Namespace.Split(".").ToList();
+            var namespaces = GetType().Namespace.Split(".").ToList();
             namespaces = namespaces.Where(ns => ns != CAMADA_PADRAO_REPOSITORIOS).ToList();
 
             _sqlFolderPath = Path.Combine(PASTA_PADRAO_PROJETO, string.Join("\\", namespaces), PASTA_PADRAO_REPOSITORIOS);
             _sqlFolderPath = _sqlFolderPath.Replace("file:\\", "");
         }
 
-        private SqlConnection ObterConexaoSql(string nomeBanco)
-        {
-            var connectionString = ObterConnectionString(nomeBanco);
-            return new SqlConnection(connectionString);
-        }
-
-        private string ObterConnectionString(string nomeBanco)
-        {
-            string arquivoConexao = Path.Combine(PASTA_PADRAO_PROJETO, "conexoes.json");
-            arquivoConexao = arquivoConexao.Replace("file:\\", "");
-
-            if (!File.Exists(arquivoConexao))
-            {
-                _mensageria.AdicionarMensagemErro($"Arquivo de conexões não existe em {arquivoConexao}");
-                return null;
-            }
-
-            List<PadraoConexao> conexoes;
-            try
-            {
-                using (StreamReader r = new StreamReader(arquivoConexao))
-                {
-                    var json = r.ReadToEnd();
-                    conexoes = JsonConvert.DeserializeObject<PadraoConexao[]>(json).ToList();
-                }
-
-                return conexoes.FirstOrDefault(x => x.Nome == nomeBanco)?.ConnectionString;
-            }
-            catch (Exception)
-            {
-                _mensageria.AdicionarMensagemErro("Ocorreu um erro ao obter as conexões necessárias.");
-                return null;
-            }
-        }
+        private T ObterServico<T>(IServiceProvider provider)
+            => (T) provider.GetService(typeof(T));
     }
 }
