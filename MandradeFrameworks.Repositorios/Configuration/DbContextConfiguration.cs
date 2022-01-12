@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace MandradeFrameworks.Repositorios.Configuration
@@ -34,6 +35,33 @@ namespace MandradeFrameworks.Repositorios.Configuration
             );
 
             return services;
+        }
+
+        /// <summary>
+        /// Método utilizado para configurar o DBContext de forma a aceitar todas as classes que configuram a tabela utilizando a interface
+        /// <see cref="IEntityTableConfiguration{TEntity}"/>.
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+        public static void AplicarModelBuilders(this ModelBuilder modelBuilder)
+        {
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var tiposParaRegistrar = new List<Type>();
+
+            foreach(var assembly in assemblies)
+            {
+                var tipo = assembly.GetTypes()
+                    .Where(x => x.GetInterfaces().Any(gi => 
+                        gi.IsGenericType && gi.GetGenericTypeDefinition() == typeof(IEntityTableConfiguration<>))
+                    ).ToList();
+
+                tiposParaRegistrar.AddRange(tipo);
+            }
+
+            foreach(var tipo in tiposParaRegistrar)
+            {
+                dynamic instanciaTipo = Activator.CreateInstance(tipo);
+                modelBuilder.ApplyConfiguration(instanciaTipo);
+            }
         }
     }
 }
