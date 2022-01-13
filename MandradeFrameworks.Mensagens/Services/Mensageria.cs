@@ -1,4 +1,5 @@
-﻿using MandradeFrameworks.Mensagens.Models;
+﻿using MandradeFrameworks.Mensagens.Exceptions;
+using MandradeFrameworks.Mensagens.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,5 +40,17 @@ namespace MandradeFrameworks.Mensagens.Services
 
         public bool PossuiErros()
             => _mensagens.Any(x => x.Tipo == TipoMensagem.Erro);
+
+        public void RetornarMensagemErro(string mensagem)
+        {
+            AdicionarMensagemErro(mensagem);
+            throw new ErroInternoException();
+        }
+
+        public void RetornarMensagemFalhaValidacao(string mensagem)
+        {
+            AdicionarMensagemFalhaValidacao(mensagem);
+            throw new FalhaValidacaoException();
+        }
     }
 }

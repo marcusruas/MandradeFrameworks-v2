@@ -1,4 +1,5 @@
 ﻿using MandradeFrameworks.Mensagens.Models;
+using MandradeFrameworks.Mensagens.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -31,7 +32,6 @@ namespace MandradeFrameworks.Mensagens
         /// </summary>
         /// <param name="mensagem">texto da mensagem</param>
         void AdicionarMensagemErro(string mensagem);
-
         /// <summary>
         /// Valida se entre as mensagens gravadas há uma cujo TipoMensagem seja <see cref="TipoMensagem.Informativa"/>
         /// </summary>
@@ -48,5 +48,13 @@ namespace MandradeFrameworks.Mensagens
         /// Valida se entre as mensagens gravadas há uma cujo TipoMensagem seja <see cref="TipoMensagem.Erro"/>
         /// </summary>
         bool PossuiErros();
+        /// <summary>
+        /// Insere nas mensagens gravadas uma mensagem do tipo <see cref="TipoMensagem.Erro"/> e lança uma exceção do tipo <see cref="ErroInternoException"/>
+        /// </summary>
+        void RetornarMensagemErro(string mensagem);
+        /// <summary>
+        /// Insere nas mensagens gravadas uma mensagem do tipo <see cref="TipoMensagem.FalhaValidacao"/> e lança uma exceção do tipo <see cref="FalhaValidacaoException"/>
+        /// </summary>
+        void RetornarMensagemFalhaValidacao(string mensagem);
     }
 }

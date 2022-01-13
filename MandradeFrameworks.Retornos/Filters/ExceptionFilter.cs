@@ -1,4 +1,5 @@
 ﻿using MandradeFrameworks.Mensagens;
+using MandradeFrameworks.Mensagens.Exceptions;
 using MandradeFrameworks.Retornos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -19,13 +20,24 @@ namespace MandradeFrameworks.Retornos.Filters
 
         private void DefinirStatusCodeRetorno(ExceptionContext context)
         {
-            int statusCodeRetorno = (int)HttpStatusCode.InternalServerError;
+            int statusCodeRetorno;
+
+            if (context.Exception is ControlledException exception)
+                statusCodeRetorno = exception.CodigoRetorno;
+            else
+                statusCodeRetorno = (int)HttpStatusCode.InternalServerError;
+
             context.HttpContext.Response.StatusCode = statusCodeRetorno;
         }
 
         private void GerarModeloRetorno(ExceptionContext context)
         {
-            string mensagemErro = "Não foi possível processar sua solicitação. Verifique os dados e tente novamente.";
+            string mensagemErro;
+
+            if (context.Exception is ControlledException exception)
+                mensagemErro = exception.MensagemPadrao;
+            else
+                mensagemErro = "Não foi possível processar sua solicitação. Verifique os dados e tente novamente.";
 
             var mensageria = ObterServico<IMensageria>(context);
             var modelo =  new RetornoApi<string>(false, mensagemErro, mensageria.Mensagens);

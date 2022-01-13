@@ -6,7 +6,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace MandradeFrameworks.Retornos
+namespace MandradeFrameworks.Retornos.Controllers
 {
     public abstract class StandardController : ControllerBase
     {
