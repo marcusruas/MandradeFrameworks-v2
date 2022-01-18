@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MandradeFrameworks.Mensagens.Models;
 using MandradeFrameworks.Repositorios.Models;
+using MandradeFrameworks.Retornos.Models;
 using System.Linq;
 
 namespace MandradeFrameworks.Repositorios.Persistence.Sql
@@ -179,7 +180,42 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql
         /// Realiza uma query em cima do context informado utilizando um membro herdado da classe <see cref="BaseSpecification{T}"/>
         /// </summary>
         /// <returns>Uma lista de entidades do tipo especificado que satisfaça os critérios informados na classe <see cref="BaseSpecification{T}"/></returns>
-        protected async Task<List<T>> ConsultaComSpecification<T>(BaseSpecification<T> specification = null) where T : class
+        protected async Task<List<T>> ConsultaComSpecification<T>(BaseSpecification<T> specification) where T : class
+        {
+            var query = AdicionarSpecification<T>(specification);
+            return await query.ToListAsync();
+        }
+
+        /// <summary>
+        /// Realiza uma query em cima do context informado utilizando um membro herdado da classe <see cref="BaseSpecification{T}"/> e retorna
+        /// uma lista embrulhada no objeto <see cref="ListaPaginada{T}"/>. Caso ocorra algum erro, será adicionado uma mensagem 
+        /// do tipo <see cref="TipoMensagem.Erro"/> no sistema de mensageria e será retornado null no retorno desta operação
+        /// </summary>
+        /// <returns>Uma lista de entidades do tipo especificado que satisfaça os critérios informados na classe <see cref="BaseSpecification{T}"/></returns>
+        protected async Task<ListaPaginada<T>> ConsultaComSpecification<T>(BaseSpecificationPaginated<T> specification) where T : class
+        {
+            if (specification.Pagina == 0 || specification.QuantidadeRegistros == 0)
+                _mensageria.AdicionarMensagemErro("Consulta utilizando paginação não pode ter Página 0 ou Quantidade de Registros 0.");
+
+            if (_mensageria.PossuiErros())
+                return null;
+
+            var query = AdicionarSpecification<T>(specification);
+            var registrosJaObtidos = specification.Pagina * specification.QuantidadeRegistros;
+
+            var itens = await query
+                    .Skip(registrosJaObtidos)
+                    .Take(specification.QuantidadeRegistros)
+                    .ToListAsync();
+
+            var quantidadeTotalRegistros = await query.CountAsync();
+            var quantidadePaginas = (double) quantidadeTotalRegistros / specification.QuantidadeRegistros;
+            var quantidadeTotalPaginas = (int) Math.Ceiling(quantidadePaginas);
+
+            return new ListaPaginada<T>(itens, specification.Pagina, quantidadeTotalPaginas);
+        }
+
+        private IQueryable<T> AdicionarSpecification<T>(BaseSpecification<T> specification) where T : class
         {
             var query = _context.Set<T>().AsQueryable();
 
@@ -194,7 +230,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql
 
             query = specification.Includes.Aggregate(query, (current, include) => current.Include(include));
 
-            return await query.ToListAsync();
+            return query;
         }
     }
 }
