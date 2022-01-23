@@ -1,6 +1,6 @@
 ﻿using MandradeFrameworks.Mensagens;
-using MandradeFrameworks.Mensagens.Exceptions;
 using MandradeFrameworks.Retornos.Models;
+using MandradeFrameworks.SharedKernel.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;

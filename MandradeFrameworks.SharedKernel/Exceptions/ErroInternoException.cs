@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MandradeFrameworks.Mensagens.Exceptions
+namespace MandradeFrameworks.SharedKernel.Exceptions
 {
     public class ErroInternoException : ControlledException
     {
