@@ -2,6 +2,8 @@
 using MandradeFrameworks.Mensagens.Models;
 using MandradeFrameworks.Repositorios.Helpers;
 using MandradeFrameworks.Repositorios.Models;
+using MandradeFrameworks.SharedKernel.Extensions;
+using MandradeFrameworks.SharedKernel.Usuario;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
@@ -16,16 +18,18 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql
 {
     public abstract class SqlRepositorio : IRepository
     {
-        public SqlRepositorio(IServiceProvider provider)
+        public SqlRepositorio(IServiceProvider services)
         {
-            _mensageria = ObterServico<IMensageria>(provider);
-            _configuration = ObterServico<IConfiguration>(provider);
+            _mensageria = services.ObterServico<IMensageria>();
+            _configuration = services.ObterServico<IConfiguration>();
+            _usuarioAutenticado = services.ObterServico<IUsuarioAutenticado>();
 
             PASTA_PADRAO_PROJETO = GetType().Assembly.CodeBase;
             DefinirSqlPath();
         }
 
         protected readonly IMensageria _mensageria;
+        protected readonly IUsuarioAutenticado _usuarioAutenticado;
 
         private readonly IConfiguration _configuration;
         private string _sqlFolderPath;
@@ -127,8 +131,5 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql
             _sqlFolderPath = Path.Combine(PASTA_PADRAO_PROJETO, string.Join("\\", namespaces), PASTA_PADRAO_REPOSITORIOS);
             _sqlFolderPath = _sqlFolderPath.Replace("file:\\", "");
         }
-
-        private T ObterServico<T>(IServiceProvider provider)
-            => (T) provider.GetService(typeof(T));
     }
 }

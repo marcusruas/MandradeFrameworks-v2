@@ -1,6 +1,7 @@
 ﻿using MandradeFrameworks.Mensagens;
 using MandradeFrameworks.Retornos.Models;
 using MandradeFrameworks.SharedKernel.Exceptions;
+using MandradeFrameworks.SharedKernel.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -39,13 +40,10 @@ namespace MandradeFrameworks.Retornos.Filters
             else
                 mensagemErro = "Não foi possível processar sua solicitação. Verifique os dados e tente novamente.";
 
-            var mensageria = ObterServico<IMensageria>(context);
+            var mensageria = context.HttpContext.ObterServico<IMensageria>();
             var modelo =  new RetornoApi<string>(false, mensagemErro, mensageria.Mensagens);
 
             context.Result = new ObjectResult(modelo);
         }
-
-        private T ObterServico<T>(ExceptionContext context)
-            => (T)context.HttpContext.RequestServices.GetService(typeof(T));
     }
 }

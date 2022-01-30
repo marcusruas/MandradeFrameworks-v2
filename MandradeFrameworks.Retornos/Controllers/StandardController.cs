@@ -1,5 +1,6 @@
 ﻿using MandradeFrameworks.Mensagens;
 using MandradeFrameworks.Retornos.Models;
+using MandradeFrameworks.SharedKernel.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -31,14 +32,11 @@ namespace MandradeFrameworks.Retornos.Controllers
         /// </summary>
         protected RetornoApi<T> RespostaPadrao<T>(T dados)
         {
-            var _mensageria = ObterServico<IMensageria>();
+            var _mensageria = HttpContext.ObterServico<IMensageria>();
             Response.StatusCode = (int)ObterStatusCodeRetorno(_mensageria);
 
             return new RetornoApi<T>(dados, _mensageria.Mensagens);
         }
-
-        private T ObterServico<T>()
-            => (T)HttpContext.RequestServices.GetService(typeof(T));
 
         private HttpStatusCode ObterStatusCodeRetorno(IMensageria mensageria)
         {
