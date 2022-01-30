@@ -11,6 +11,8 @@ namespace MandradeFrameworks.Retornos.Configuration
         public static MvcOptions AdicionarConfiguracoes(this MvcOptions configuracoes)
         {
             configuracoes.Filters.Add<ExceptionFilter>();
+            configuracoes.Filters.Add<ModelValidationFilter>();
+
             return configuracoes;
         }
     }

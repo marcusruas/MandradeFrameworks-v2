@@ -14,9 +14,9 @@ namespace MandradeFrameworks.Retornos.Handlers
     public abstract class ApplicationRequestHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
         /// <summary>
-        /// Instancia de um request handler com o seu <see cref="HttpContext"/>
+        /// Instancia de um request handler com o seu <see cref="IServiceProvider"/>
         /// </summary>
-        /// <param name="context">context para que seja possível obter os serviços necessários da aplicação</param>
+        /// <param name="services">IServiceProvider para que seja possível obter os serviços necessários da aplicação</param>
         public ApplicationRequestHandler(IServiceProvider services)
         {
             _mensageria = services.ObterServico<IMensageria>();
