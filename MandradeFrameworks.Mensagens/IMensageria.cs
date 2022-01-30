@@ -1,5 +1,4 @@
 ﻿using MandradeFrameworks.Mensagens.Models;
-using MandradeFrameworks.Mensagens.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;

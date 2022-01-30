@@ -1,5 +1,5 @@
-﻿using MandradeFrameworks.Mensagens.Exceptions;
-using MandradeFrameworks.Mensagens.Models;
+﻿using MandradeFrameworks.Mensagens.Models;
+using MandradeFrameworks.SharedKernel.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
