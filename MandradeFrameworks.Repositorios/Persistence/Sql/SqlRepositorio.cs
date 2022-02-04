@@ -36,7 +36,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql
 
         private const string CAMADA_PADRAO_REPOSITORIOS = "Infrastructure";
         private const string PASTA_PADRAO_REPOSITORIOS = "SQL";
-        private string PASTA_PADRAO_PROJETO;
+        private readonly string PASTA_PADRAO_PROJETO;
 
         /// <summary>
         /// Obtém o conteudo (query SQL) do arquivo cujo nome é informado 

@@ -14,7 +14,7 @@ namespace MandradeFrameworks.Logs.Configuration
         /// <summary>
         /// Método para adicionar logs na aplicação.
         /// </summary>
-        public static void AdicionarLogs(this IServiceCollection services, LogsOpcoesSQL opcoes)
+        public static void AdicionarLogs(SQLLogsConfiguration opcoes)
         {
             if (string.IsNullOrWhiteSpace(opcoes.ConnectionString))
                 throw new ArgumentException("Connection String da base de logs não pode ser vazio.");
@@ -22,15 +22,12 @@ namespace MandradeFrameworks.Logs.Configuration
             if (string.IsNullOrWhiteSpace(opcoes.Tabela))
                 throw new ArgumentException("Nome da tabela de logs não pode ser vazio.");
 
-            services.AddSingleton(opcoes);
-
             GerarTabelaSQL(opcoes);
             CriarInstanciaSerilog(opcoes);
         }
-        private static void CriarInstanciaSerilog(LogsOpcoesSQL opcoes)
-        {
-            string schema = string.IsNullOrWhiteSpace(opcoes.Schema) ? "dbo" : opcoes.Schema;
 
+        private static void CriarInstanciaSerilog(SQLLogsConfiguration opcoes)
+        {
             var additionalColumns = new Collection<SqlColumn> { new SqlColumn { ColumnName = "Action" } };
             var options = new ColumnOptions() { AdditionalColumns = additionalColumns };
             
@@ -38,20 +35,20 @@ namespace MandradeFrameworks.Logs.Configuration
                 .WriteTo
                 .MSSqlServer(
                     connectionString: opcoes.ConnectionString,
-                    sinkOptions: new MSSqlServerSinkOptions { SchemaName = schema, TableName = opcoes.Tabela },
+                    sinkOptions: new MSSqlServerSinkOptions { SchemaName = opcoes.Schema, TableName = opcoes.Tabela },
                     columnOptions: options
                 )
                 .CreateLogger();
         }
 
-        private static void GerarTabelaSQL(LogsOpcoesSQL opcoes)
+        private static void GerarTabelaSQL(SQLLogsConfiguration opcoes)
         {
             var consulta = QueryCriacaoTabela(opcoes);
 
             try
             {
-                using (var connection = new SqlConnection(opcoes.ConnectionString))
-                    connection.Execute(consulta);
+                using var connection = new SqlConnection(opcoes.ConnectionString);
+                connection.Execute(consulta);
             }
             catch (Exception ex)
             {
@@ -59,7 +56,7 @@ namespace MandradeFrameworks.Logs.Configuration
             }
         }
 
-        private static string QueryCriacaoTabela(LogsOpcoesSQL opcoes)
+        private static string QueryCriacaoTabela(SQLLogsConfiguration opcoes)
         {
             string schema = string.IsNullOrWhiteSpace(opcoes.Schema) ? "dbo" : opcoes.Schema;
             string tabela = $"[{schema}].[{opcoes.Tabela}]";
@@ -67,7 +64,7 @@ namespace MandradeFrameworks.Logs.Configuration
             return $@"
                 IF NOT EXISTS(OBJECT_ID('{tabela}'))
                 BEGIN
-                    CREATE TABLE [Logs] (
+                    CREATE TABLE {tabela} (
                        [Id] int IDENTITY(1,1) NOT NULL,
                        [Message] nvarchar(500) NULL,
                        [MessageTemplate] nvarchar(500) NULL,

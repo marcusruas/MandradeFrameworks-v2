@@ -4,14 +4,13 @@ using System.Text;
 
 namespace MandradeFrameworks.Logs.Models
 {
-    public class LogsOpcoesSQL
+    public class SQLLogsConfiguration
     {
-        public LogsOpcoesSQL(string connectionString, string tabela, string schema = null, bool logsHabilitados = true)
+        public SQLLogsConfiguration(string connectionString, string tabela, string schema = null)
         {
             ConnectionString = connectionString;
             Schema = schema;
             Tabela = tabela;
-            LogsHabilitados = logsHabilitados;
         }
 
         /// <summary>
@@ -26,9 +25,5 @@ namespace MandradeFrameworks.Logs.Models
         /// Nome da tabela que irá gravar os logs da aplicação.
         /// </summary>
         public string Tabela { get; }
-        /// <summary>
-        /// Informa se a aplicação está habilitada para logs.
-        /// </summary>
-        public bool LogsHabilitados { get; }
     }
 }
