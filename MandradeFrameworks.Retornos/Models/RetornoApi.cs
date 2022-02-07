@@ -7,6 +7,8 @@ namespace MandradeFrameworks.Retornos.Models
 {
     public class RetornoApi<T>
     {
+        public RetornoApi() { }
+
         public RetornoApi(bool sucesso, T dados, IEnumerable<Mensagem> mensagens)
         {
             Sucesso = sucesso;
