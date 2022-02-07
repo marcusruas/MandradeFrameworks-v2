@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <PackageId>Autenticacao</PackageId>
+    <PackageId>MandradeFrameworks.Autenticacao</PackageId>
     <Version>1.0.0</Version>
     <description>Pacote helpers de autenticação via JWT (Json Web Tokens) para uma API.</description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
