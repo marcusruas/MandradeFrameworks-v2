@@ -6,6 +6,8 @@ namespace MandradeFrameworks.Tests.Models
 {
     public class ConfiguracoesTestes
     {
+        public ConfiguracoesTestes() {  }
+
         public ConfiguracoesTestes(string connectionString, string tokenPadraoTestes)
         {
             ConnectionString = connectionString;

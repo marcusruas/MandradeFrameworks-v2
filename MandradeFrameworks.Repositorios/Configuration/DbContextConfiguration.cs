@@ -1,5 +1,4 @@
-﻿
-using MandradeFrameworks.Repositorios.Helpers;
+﻿using MandradeFrameworks.Repositorios.Helpers;
 using MandradeFrameworks.Repositorios.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

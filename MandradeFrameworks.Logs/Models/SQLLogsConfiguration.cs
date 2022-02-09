@@ -6,6 +6,8 @@ namespace MandradeFrameworks.Logs.Models
 {
     public class SQLLogsConfiguration
     {
+        public SQLLogsConfiguration() { }
+
         public SQLLogsConfiguration(string connectionString, string tabela, string schema = null)
         {
             ConnectionString = connectionString;
