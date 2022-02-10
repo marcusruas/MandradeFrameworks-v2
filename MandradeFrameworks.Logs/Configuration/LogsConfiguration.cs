@@ -62,7 +62,7 @@ namespace MandradeFrameworks.Logs.Configuration
             string tabela = $"[{schema}].[{opcoes.Tabela}]";
 
             return $@"
-                IF NOT EXISTS(OBJECT_ID('{tabela}'))
+                IF (SELECT OBJECT_ID('{tabela}')) IS NULL 
                 BEGIN
                     CREATE TABLE {tabela} (
                        [Id] int IDENTITY(1,1) NOT NULL,

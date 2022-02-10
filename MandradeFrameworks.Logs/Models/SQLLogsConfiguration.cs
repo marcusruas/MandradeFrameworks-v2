@@ -8,13 +8,6 @@ namespace MandradeFrameworks.Logs.Models
     {
         public SQLLogsConfiguration() { }
 
-        public SQLLogsConfiguration(string connectionString, string tabela, string schema = null)
-        {
-            ConnectionString = connectionString;
-            Schema = schema;
-            Tabela = tabela;
-        }
-
         /// <summary>
         /// Connection String do banco SQL Server onde será armazenado a tabela de logs.
         /// </summary>
@@ -26,6 +19,6 @@ namespace MandradeFrameworks.Logs.Models
         /// <summary>
         /// Nome da tabela que irá gravar os logs da aplicação.
         /// </summary>
-        public string Tabela { get; }
+        public string Tabela { get; set; }
     }
 }

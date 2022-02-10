@@ -8,19 +8,13 @@ namespace MandradeFrameworks.Tests.Models
     {
         public ConfiguracoesTestes() {  }
 
-        public ConfiguracoesTestes(string connectionString, string tokenPadraoTestes)
-        {
-            ConnectionString = connectionString;
-            TokenPadraoTestes = tokenPadraoTestes;
-        }
-
         /// <summary>
         /// Connection string da base que será criada para os testes de integração
         /// </summary>
-        public string ConnectionString { get; }
+        public string ConnectionString { get; set; }
         /// <summary>
         /// Token que será inserido por padrão no client
         /// </summary>
-        public string TokenPadraoTestes { get; }
+        public string TokenPadraoTestes { get; set; }
     }
 }
