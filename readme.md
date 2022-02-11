@@ -46,10 +46,11 @@ Auxiliares na criação de testes de integração e unitários. Ele também poss
 
 ## Algumas bibliotecas utilizadas neste framework
 
-[Dapper](https://dapper-tutorial.net/): Para manuseio de banco de dados (CRUD de queries SQL por exemplo);
-[Entity Framework](https://docs.microsoft.com/pt-br/ef/): Mesmo motivo acima, porém fornece maior abstração para manuseio de queries SQL no seu banco de dados (usuário pode optar por usar ou o Dapper, ou o EF ou ambos).
-[Mediatr](https://github.com/jbogard/MediatR): Para isolação da implementação de serviços e endpoints em handlers e requests, afim de tornar a isolação de implementação e manuseio mais fácil;
-[Newtonsoft.Json](https://www.newtonsoft.com/json): Para manusear objetos no formato JSON;
+[Dapper](https://dapper-tutorial.net/): Para manuseio de banco de dados (CRUD de queries SQL por exemplo);\
+[Entity Framework](https://docs.microsoft.com/pt-br/ef/): Mesmo motivo acima, porém fornece maior abstração para manuseio 
+de queries SQL no seu banco de dados (usuário pode optar por usar ou o Dapper, ou o EF ou ambos).\
+[Mediatr](https://github.com/jbogard/MediatR): Para isolação da implementação de serviços e endpoints em handlers e requests, afim de tornar a isolação de implementação e manuseio mais fácil;\
+[Newtonsoft.Json](https://www.newtonsoft.com/json): Para manusear objetos no formato JSON;\
 [Serilog](https://serilog.net/): Para gravação de logs da aplicação.
 
 ## Como gerar os pacotes para publicação na source?
