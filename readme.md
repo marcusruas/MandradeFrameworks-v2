@@ -20,6 +20,10 @@ Atualmente cada pacote possui uma class estática (_static class_) que já possu
 
 O pacote de autenticação possui uma estrutura inicial bem simples para limitar o acesso de certos endpoints e para leitura de tokens passados no header de _Authorization_ de uma requisição. Ao ler um token enviado pelo Header da requisição, a implementação deste pacote irá inserir as informações obtidas em um objeto pronto para uso do usuário em toda aplicação.
 
+### Versão anterior
+
+Este pacote traz diversas features da primeira versão [deste projeto](https://github.com/marcusruas/MandradePkgs) e as amplifica e traz novas.
+
 ### Logs
 
 Pacote com implementação de logs de erros/informação/alerta utilizando a biblioteca Serilog.
