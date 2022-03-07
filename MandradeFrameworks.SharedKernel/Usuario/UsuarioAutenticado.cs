@@ -22,7 +22,7 @@ namespace MandradeFrameworks.SharedKernel.Usuario
         public IEnumerable<string> Permissoes { get; private set; }
 
         private const string NOME_USUARIO_GENERICO = "Token Anônimo";
-        private const string FUNCIONAL_USUARIO_GENERICO = "00011111111";
+        private const string FUNCIONAL_USUARIO_GENERICO = "011111111";
 
         public bool EstaAutenticado()
             => NomeCompleto != NOME_USUARIO_GENERICO && Funcional != FUNCIONAL_USUARIO_GENERICO;
