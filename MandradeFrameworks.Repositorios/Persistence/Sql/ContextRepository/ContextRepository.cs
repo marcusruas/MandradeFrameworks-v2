@@ -10,7 +10,8 @@ using MandradeFrameworks.SharedKernel.Models;
 
 namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
 {
-    public abstract class StandardSqlRepository<TContext> : StandardSqlRepository where TContext : StandardContext, IContextRepository
+    public abstract class StandardSqlRepository<TContext> : StandardSqlRepository, IContextRepository 
+    where TContext : StandardContext
     {
         public StandardSqlRepository(IServiceProvider provider, TContext context) : base(provider)
         {
@@ -19,7 +20,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
 
         protected readonly TContext _context;
 
-        protected async Task<int> AdicionarEntidade<T>(T entidade)
+        public async Task<int> AdicionarEntidade<T>(T entidade)
         {
             try
             {
@@ -40,7 +41,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
             }
         }
 
-        protected async Task<int> AdicionarEntidade<T>(List<T> entidades)
+        public async Task<int> AdicionarEntidade<T>(List<T> entidades)
         {
             try
             {
@@ -61,7 +62,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
             }
         }
 
-        protected async Task<int> AlterarEntidade<T>(T entidade)
+        public async Task<int> AlterarEntidade<T>(T entidade)
         {
             try
             {
@@ -82,7 +83,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
             }
         }
 
-        protected async Task<int> AlterarEntidade<T>(List<T> entidades)
+        public async Task<int> AlterarEntidade<T>(List<T> entidades)
         {
             try
             {
@@ -103,7 +104,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
             }
         }
 
-        protected async Task<int> DeletarEntidade<T>(T entidade)
+        public async Task<int> DeletarEntidade<T>(T entidade)
         {
             try
             {
@@ -124,7 +125,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
             }
         }
 
-        protected async Task<int> DeletarEntidade<T>(List<T> entidades)
+        public async Task<int> DeletarEntidade<T>(List<T> entidades)
         {
             try
             {
@@ -144,14 +145,14 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
                 return -1;
             }
         }
-        
-        protected async Task<List<T>> ConsultaComSpecification<T>(BaseSpecification<T> specification) where T : class
+
+        public async Task<List<T>> ConsultaComSpecification<T>(BaseSpecification<T> specification) where T : class
         {
             var query = AdicionarSpecification<T>(specification);
             return await query.ToListAsync();
         }
 
-        protected async Task<ListaPaginada<T>> ConsultaComSpecification<T>(BaseSpecificationPaginated<T> specification) where T : class
+        public async Task<ListaPaginada<T>> ConsultaComSpecification<T>(BaseSpecificationPaginated<T> specification) where T : class
         {
             if (specification.Pagina == 0 || specification.QuantidadeRegistros == 0)
                 _mensageria.AdicionarMensagemErro("Consulta utilizando paginação não pode ter Página 0 ou Quantidade de Registros 0.");
