@@ -1,4 +1,5 @@
 ﻿using MandradeFrameworks.Mensagens;
+using MandradeFrameworks.Repositorios.Persistence;
 using MandradeFrameworks.SharedKernel.Extensions;
 using MandradeFrameworks.SharedKernel.Usuario;
 using MediatR;
@@ -19,13 +20,20 @@ namespace MandradeFrameworks.Retornos.Handlers
         /// <param name="services">IServiceProvider para que seja possível obter os serviços necessários da aplicação</param>
         public ApplicationRequestHandler(IServiceProvider services)
         {
+            _services = services;
+
             _mensageria = services.ObterServico<IMensageria>();
             _usuarioAutenticado = services.ObterServico<IUsuarioAutenticado>();
         }
+
+        private IServiceProvider _services;
 
         protected readonly IMensageria _mensageria;
         protected readonly IUsuarioAutenticado _usuarioAutenticado;
 
         public abstract Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken);
+
+        public T ObterRepositorio<T>() where T : IRepository
+            => _services.ObterServico<T>();
     }
 }

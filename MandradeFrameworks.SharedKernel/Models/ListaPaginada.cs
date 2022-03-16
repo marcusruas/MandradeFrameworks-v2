@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MandradeFrameworks.Retornos.Models
+namespace MandradeFrameworks.SharedKernel.Models
 {
     /// <summary>
     /// Objeto para retornar uma lista paginada.

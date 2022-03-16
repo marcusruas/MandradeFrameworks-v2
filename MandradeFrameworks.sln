@@ -18,6 +18,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MandradeFrameworks.Repositorios", "MandradeFrameworks.Repositorios\MandradeFrameworks.Repositorios.csproj", "{FF7D4D5C-881C-496A-A36A-67B26EA45446}"
 	ProjectSection(ProjectDependencies) = postProject
 		{31C28D68-E750-4978-B036-3C6DE0FEF560} = {31C28D68-E750-4978-B036-3C6DE0FEF560}
+		{118AF9A0-3A05-418D-B9E9-9B81FD6219AA} = {118AF9A0-3A05-418D-B9E9-9B81FD6219AA}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BB29AE4D-CA0C-4A29-869F-3C06DCCB9D78}"
@@ -29,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MandradeFrameworks.Autentic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MandradeFrameworks.Logs", "MandradeFrameworks.Logs\MandradeFrameworks.Logs.csproj", "{78418E8C-F292-4C73-8805-A10C3B764369}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MandradeFrameworks.Tests", "MandradeFrameworks.Tests\MandradeFrameworks.Tests.csproj", "{EE7A6E13-682B-42EC-965A-97D256873088}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MandradeFrameworks.Tests", "MandradeFrameworks.Tests\MandradeFrameworks.Tests.csproj", "{EE7A6E13-682B-42EC-965A-97D256873088}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

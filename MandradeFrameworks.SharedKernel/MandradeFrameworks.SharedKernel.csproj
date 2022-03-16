@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>MandradeFrameworks.SharedKernel</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <description>Pacote com classes para auxiliar o desenvolvimento de uma API.</description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>

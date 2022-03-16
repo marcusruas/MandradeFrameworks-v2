@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using MandradeFrameworks.Mensagens.Models;
 using MandradeFrameworks.Repositorios.Models;
-using MandradeFrameworks.Retornos.Models;
 using System.Linq;
+using MandradeFrameworks.SharedKernel.Models;
 
 namespace MandradeFrameworks.Repositorios.Persistence.Sql
 {
