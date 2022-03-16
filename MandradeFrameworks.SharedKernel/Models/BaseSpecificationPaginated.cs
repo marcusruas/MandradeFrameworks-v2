@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace MandradeFrameworks.Repositorios.Models
+namespace MandradeFrameworks.SharedKernel.Models
 {
     public abstract class BaseSpecificationPaginated<T> : BaseSpecification<T>
     {
