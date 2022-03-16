@@ -16,9 +16,9 @@ using System.Threading.Tasks;
 
 namespace MandradeFrameworks.Repositorios.Persistence.Sql
 {
-    public abstract class SqlRepositorio : IRepository
+    public abstract class StandardSqlRepository : IRepository
     {
-        public SqlRepositorio(IServiceProvider services)
+        public StandardSqlRepository(IServiceProvider services)
         {
             _mensageria = services.ObterServico<IMensageria>();
             _configuration = services.ObterServico<IConfiguration>();

@@ -30,7 +30,10 @@ namespace MandradeFrameworks.Repositorios.Configuration
             var migrationsTable = $"__{nomeBanco}";
 
             services.AddDbContext<TContext>(config =>
-                config.UseSqlServer(connectionString, x => x.MigrationsHistoryTable(migrationsTable))
+                config.UseSqlServer(
+                    connectionString, 
+                    x => x.MigrationsHistoryTable(migrationsTable)
+                )
             );
 
             return services;
