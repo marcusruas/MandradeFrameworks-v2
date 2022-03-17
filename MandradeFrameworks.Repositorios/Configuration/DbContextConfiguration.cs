@@ -22,7 +22,7 @@ namespace MandradeFrameworks.Repositorios.Configuration
             this IServiceCollection services, 
             IConfiguration configuration, 
             string nomeBanco
-        ) where TContext : StandardContext
+        ) where TContext : StandardContext<TContext>
         {
             var cnnHelper = new ConnectionStringHelper(configuration);
             

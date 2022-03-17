@@ -6,9 +6,10 @@ using System.Text;
 
 namespace MandradeFrameworks.Repositorios.Models
 {
-    public abstract class StandardContext : DbContext
+    public abstract class StandardContext<TContext> : DbContext
+    where TContext : DbContext
     {
-        public StandardContext(DbContextOptions<StandardContext> options) : base(options) { }
+        public StandardContext(DbContextOptions<TContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
             => modelBuilder.AplicarModelBuilders();

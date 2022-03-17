@@ -11,7 +11,7 @@ using MandradeFrameworks.SharedKernel.Models;
 namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
 {
     public abstract class StandardSqlRepository<TContext> : StandardSqlRepository, IContextRepository 
-    where TContext : StandardContext
+    where TContext : StandardContext<TContext>
     {
         public StandardSqlRepository(IServiceProvider provider, TContext context) : base(provider)
         {
