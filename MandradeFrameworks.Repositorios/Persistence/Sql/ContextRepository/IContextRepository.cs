@@ -59,5 +59,13 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
         /// </summary>
         /// <returns>Uma lista de entidades do tipo especificado que satisfaça os critérios informados na classe <see cref="BaseSpecification{T}"/></returns>
         Task<ListaPaginada<T>> ConsultaComSpecification<T>(BaseSpecificationPaginated<T> specification) where T : class;
+        /// <summary>
+        /// Obtém o primeiro registro da tabela da entidade em questão.
+        /// </summary>
+        Task<T> FirstOrDefaultAsync<T>() where T : class;
+        /// <summary>
+        /// Obtém todos os registros da tabela da entidade em questão
+        /// </summary>
+        Task<List<T>> ToListAsync<T>() where T : class;
     }
 }
