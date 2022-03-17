@@ -19,10 +19,8 @@ namespace MandradeFrameworks.Repositorios.Helpers
             _configuration = configuration;
         }
 
-        private IConfiguration _configuration;
-        private IMensageria _mensageria;
-
-        private const string SECCAO_CONNECTION_STRINGS = "ConnectionStrings";
+        private readonly IConfiguration _configuration;
+        private readonly IMensageria _mensageria;
 
         /// <summary>
         /// Obtém a connection string dentro do objeto "ConnectionStrings" dentro do JSON de configurações da API.
@@ -36,9 +34,7 @@ namespace MandradeFrameworks.Repositorios.Helpers
         public string ObterConnectionString(string nomeBanco)
         {
             string mensagemErro = $"Não foi possível localizar a connection string do banco {nomeBanco}";
-
-            string ConnectionStringLocation = $"{SECCAO_CONNECTION_STRINGS}:{nomeBanco}";
-            var cnn = _configuration.GetSection(ConnectionStringLocation).Value;
+            var cnn = _configuration.GetConnectionString(nomeBanco);
 
             if (string.IsNullOrWhiteSpace(cnn))
             {

@@ -8,6 +8,8 @@ namespace MandradeFrameworks.Repositorios.Models
 {
     public abstract class StandardContext : DbContext
     {
+        public StandardContext(DbContextOptions<StandardContext> options) : base(options) { }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
             => modelBuilder.AplicarModelBuilders();
     }
