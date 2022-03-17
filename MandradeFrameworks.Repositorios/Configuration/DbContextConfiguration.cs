@@ -53,7 +53,7 @@ namespace MandradeFrameworks.Repositorios.Configuration
             {
                 var tipo = assembly.GetTypes()
                     .Where(x => x.GetInterfaces().Any(gi => 
-                        gi.IsGenericType && gi.GetGenericTypeDefinition() == typeof(IEntityTableConfiguration<>))
+                        gi.IsGenericType && gi.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>))
                     ).ToList();
 
                 tiposParaRegistrar.AddRange(tipo);
