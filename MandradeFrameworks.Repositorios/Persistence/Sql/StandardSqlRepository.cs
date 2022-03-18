@@ -131,7 +131,6 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql
             _sqlFolderPath = Path.Combine(
                 PASTA_PADRAO_PROJETO, 
                 string.Join("\\", namespaces),
-                CAMADA_PADRAO_REPOSITORIOS,
                 PASTA_PADRAO_REPOSITORIOS
             );
             _sqlFolderPath = _sqlFolderPath.Replace("file:\\", "");
