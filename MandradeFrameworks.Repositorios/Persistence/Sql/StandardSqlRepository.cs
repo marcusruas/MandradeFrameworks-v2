@@ -24,7 +24,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql
             _configuration = services.ObterServico<IConfiguration>();
             _usuarioAutenticado = services.ObterServico<IUsuarioAutenticado>();
 
-            PASTA_PADRAO_PROJETO = GetType().Assembly.CodeBase;
+            PASTA_PADRAO_PROJETO = Path.GetDirectoryName(GetType().Assembly.CodeBase);
             DefinirSqlPath();
         }
 
@@ -128,7 +128,12 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql
             var namespaces = GetType().Namespace.Split(".").ToList();
             namespaces = namespaces.Where(ns => ns != CAMADA_PADRAO_REPOSITORIOS).ToList();
 
-            _sqlFolderPath = Path.Combine(PASTA_PADRAO_PROJETO, string.Join("\\", namespaces), PASTA_PADRAO_REPOSITORIOS);
+            _sqlFolderPath = Path.Combine(
+                PASTA_PADRAO_PROJETO, 
+                string.Join("\\", namespaces),
+                CAMADA_PADRAO_REPOSITORIOS,
+                PASTA_PADRAO_REPOSITORIOS
+            );
             _sqlFolderPath = _sqlFolderPath.Replace("file:\\", "");
         }
     }

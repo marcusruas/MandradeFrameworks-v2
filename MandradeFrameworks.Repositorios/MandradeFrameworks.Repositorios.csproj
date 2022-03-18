@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>MandradeFrameworks.Repositorios</PackageId>
-    <Version>1.0.8</Version>
+    <Version>1.0.9</Version>
     <description>Pacote de persistência em banco de dados relacionais e não relacionais.</description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
