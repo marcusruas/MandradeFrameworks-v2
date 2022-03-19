@@ -6,6 +6,7 @@ using Dapper;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
+using Serilog.Events;
 
 namespace MandradeFrameworks.Logs.Configuration
 {
@@ -28,15 +29,17 @@ namespace MandradeFrameworks.Logs.Configuration
 
         private static void CriarInstanciaSerilog(SQLLogsConfiguration opcoes)
         {
-            var additionalColumns = new Collection<SqlColumn> { new SqlColumn { ColumnName = "Action" } };
-            var options = new ColumnOptions() { AdditionalColumns = additionalColumns };
-            
             Log.Logger = new LoggerConfiguration()
-                .WriteTo
-                .MSSqlServer(
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
+                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Error)
+                .WriteTo.MSSqlServer(
                     connectionString: opcoes.ConnectionString,
-                    sinkOptions: new MSSqlServerSinkOptions { SchemaName = opcoes.Schema, TableName = opcoes.Tabela },
-                    columnOptions: options
+                    sinkOptions: new MSSqlServerSinkOptions() 
+                    { 
+                        TableName = opcoes.Tabela, 
+                        SchemaName = opcoes.Schema 
+                    }
                 )
                 .CreateLogger();
         }

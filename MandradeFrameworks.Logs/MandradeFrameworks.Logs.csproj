@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>MandradeFrameworks.Logs</PackageId>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <description>Pacote de configuração de logs para uma API.</description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
