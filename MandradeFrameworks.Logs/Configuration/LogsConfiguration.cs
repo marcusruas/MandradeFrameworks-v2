@@ -7,6 +7,7 @@ using Serilog;
 using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
 using Serilog.Events;
+using Microsoft.Extensions.Configuration;
 
 namespace MandradeFrameworks.Logs.Configuration
 {
@@ -15,42 +16,33 @@ namespace MandradeFrameworks.Logs.Configuration
         /// <summary>
         /// Método para adicionar logs na aplicação.
         /// </summary>
-        public static void AdicionarLogs(SQLLogsConfiguration opcoes)
+        /// <param name="configuration">Objeto de configurações da aplicação</param>
+        /// <param name="tabela">Nome da tabela para gravação de logs.</param>
+        /// <param name="schema">Schema da Tabela para gravação de logs. Caso não preenchido será 'dbo'</param>
+        public static void AdicionarLogs(IConfiguration configuration, string tabela, string schema = "dbo")
         {
-            if (string.IsNullOrWhiteSpace(opcoes.ConnectionString))
-                throw new ArgumentException("Connection String da base de logs não pode ser vazio.");
+            string chaveCnnLogs = "Logs";
+            string connectionStringLogs = configuration.GetConnectionString(chaveCnnLogs);
 
-            if (string.IsNullOrWhiteSpace(opcoes.Tabela))
+            var configsLogs = new SQLLogsConfiguration(connectionStringLogs, schema, tabela);
+
+            if (string.IsNullOrWhiteSpace(configsLogs.ConnectionString))
+                throw new ArgumentException($"Connection String da base de logs não pode ser vazio. A ConnectionString deve estar no objeto do AppSettings, chave '${chaveCnnLogs}'");
+
+            if (string.IsNullOrWhiteSpace(configsLogs.Tabela))
                 throw new ArgumentException("Nome da tabela de logs não pode ser vazio.");
 
-            GerarTabelaSQL(opcoes);
-            CriarInstanciaSerilog(opcoes);
+            GerarTabelaSQL(configsLogs);
+            CriarInstanciaSerilog(configsLogs);
         }
 
-        private static void CriarInstanciaSerilog(SQLLogsConfiguration opcoes)
+        private static void GerarTabelaSQL(SQLLogsConfiguration configs)
         {
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
-                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Error)
-                .WriteTo.MSSqlServer(
-                    connectionString: opcoes.ConnectionString,
-                    sinkOptions: new MSSqlServerSinkOptions() 
-                    { 
-                        TableName = opcoes.Tabela, 
-                        SchemaName = opcoes.Schema 
-                    }
-                )
-                .CreateLogger();
-        }
-
-        private static void GerarTabelaSQL(SQLLogsConfiguration opcoes)
-        {
-            var consulta = QueryCriacaoTabela(opcoes);
+            var consulta = QueryCriacaoTabela(configs);
 
             try
             {
-                using var connection = new SqlConnection(opcoes.ConnectionString);
+                using var connection = new SqlConnection(configs.ConnectionString);
                 connection.Execute(consulta);
             }
             catch (Exception ex)
@@ -59,15 +51,14 @@ namespace MandradeFrameworks.Logs.Configuration
             }
         }
 
-        private static string QueryCriacaoTabela(SQLLogsConfiguration opcoes)
+        private static string QueryCriacaoTabela(SQLLogsConfiguration configs)
         {
-            string schema = string.IsNullOrWhiteSpace(opcoes.Schema) ? "dbo" : opcoes.Schema;
-            string tabela = $"[{schema}].[{opcoes.Tabela}]";
+            string tabelaComSchema = $"[{configs.Schema}].[{configs.Tabela}]";
 
             return $@"
-                IF (SELECT OBJECT_ID('{tabela}')) IS NULL 
+                IF (SELECT OBJECT_ID('{tabelaComSchema}')) IS NULL 
                 BEGIN
-                    CREATE TABLE {tabela} (
+                    CREATE TABLE {tabelaComSchema} (
                        [Id] int IDENTITY(1,1) NOT NULL,
                        [Message] nvarchar(500) NULL,
                        [MessageTemplate] nvarchar(500) NULL,
@@ -80,10 +71,27 @@ namespace MandradeFrameworks.Logs.Configuration
                        CONSTRAINT [PK_Logs] PRIMARY KEY CLUSTERED ([Id] ASC) 
                     );
 
-                    CREATE INDEX IX_Consulta_Simplificada ON {tabela} (Data, Message)
-                    CREATE INDEX IX_Consulta_Nivel ON {tabela} (Data, Level)
+                    CREATE INDEX IX_Consulta_Simplificada ON {tabelaComSchema} (Data, Message)
+                    CREATE INDEX IX_Consulta_Nivel ON {tabelaComSchema} (Data, Level)
                 END
             ";
+        }
+
+        private static void CriarInstanciaSerilog(SQLLogsConfiguration configs)
+        {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
+                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Error)
+                .WriteTo.MSSqlServer(
+                    connectionString: configs.ConnectionString,
+                    sinkOptions: new MSSqlServerSinkOptions() 
+                    { 
+                        TableName = configs.Tabela, 
+                        SchemaName = configs.Schema 
+                    }
+                )
+                .CreateLogger();
         }
     }
 }

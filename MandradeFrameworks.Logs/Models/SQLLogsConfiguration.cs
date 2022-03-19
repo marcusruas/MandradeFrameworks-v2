@@ -4,9 +4,14 @@ using System.Text;
 
 namespace MandradeFrameworks.Logs.Models
 {
-    public class SQLLogsConfiguration
+    internal class SQLLogsConfiguration
     {
-        public SQLLogsConfiguration() { }
+        public SQLLogsConfiguration(string connectionString, string schema, string tabela)
+        {
+            ConnectionString = connectionString;
+            Schema = schema;
+            Tabela = tabela;
+        }
 
         /// <summary>
         /// Connection String do banco SQL Server onde será armazenado a tabela de logs.
