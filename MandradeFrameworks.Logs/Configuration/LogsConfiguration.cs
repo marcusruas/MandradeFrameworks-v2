@@ -68,11 +68,11 @@ namespace MandradeFrameworks.Logs.Configuration
                        [Exception] nvarchar(max) NULL,
                        [Properties] nvarchar(max) NULL
 
-                       CONSTRAINT [PK_{tabelaComSchema}] PRIMARY KEY CLUSTERED ([Id] ASC) 
+                       CONSTRAINT [PK_{configs.Tabela}] PRIMARY KEY CLUSTERED ([Id] ASC) 
                     );
 
-                    CREATE INDEX IX_Consulta_Simplificada ON {tabelaComSchema} (Data, Message)
-                    CREATE INDEX IX_Consulta_Nivel ON {tabelaComSchema} (Data, Level)
+                    CREATE INDEX IX_Consulta_Simplificada ON {tabelaComSchema} (TimeStamp, Message)
+                    CREATE INDEX IX_Consulta_Nivel ON {tabelaComSchema} (TimeStamp, Level)
                 END
             ";
         }
