@@ -19,7 +19,8 @@ namespace MandradeFrameworks.Logs.Configuration
         /// <param name="configuration">Objeto de configurações da aplicação</param>
         /// <param name="tabela">Nome da tabela para gravação de logs.</param>
         /// <param name="schema">Schema da Tabela para gravação de logs. Caso não preenchido será 'dbo'</param>
-        public static void AdicionarLogs(IConfiguration configuration, string tabela, string schema = "dbo")
+        /// <param name="criarTabelaSeNaoExistir">Define se caso a tabela solicitada para gravação de logs não exista, ela será criada no DB da ConnectionString</param>
+        public static void AdicionarLogs(IConfiguration configuration, string tabela, string schema = "dbo", bool criarTabelaSeNaoExistir = true)
         {
             string chaveCnnLogs = "Logs";
             string connectionStringLogs = configuration.GetConnectionString(chaveCnnLogs);
@@ -65,10 +66,9 @@ namespace MandradeFrameworks.Logs.Configuration
                        [Level] nvarchar(128) NULL,
                        [TimeStamp] datetime NOT NULL,
                        [Exception] nvarchar(max) NULL,
-                       [Properties] nvarchar(max) NULL,
-                       [Action] nvarchar(max) NULL
+                       [Properties] nvarchar(max) NULL
 
-                       CONSTRAINT [PK_Logs] PRIMARY KEY CLUSTERED ([Id] ASC) 
+                       CONSTRAINT [PK_{tabelaComSchema}] PRIMARY KEY CLUSTERED ([Id] ASC) 
                     );
 
                     CREATE INDEX IX_Consulta_Simplificada ON {tabelaComSchema} (Data, Message)

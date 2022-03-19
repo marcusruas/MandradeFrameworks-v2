@@ -1,6 +1,6 @@
 Write-Host "Removendo pasta temporaria de pacotes compilados e criando novamente"
 
-Remove-Item PacotesCompilados/ -Recursive -Force
+Remove-Item PacotesCompilados/ -Force
 
 md PacotesCompilados/
 
