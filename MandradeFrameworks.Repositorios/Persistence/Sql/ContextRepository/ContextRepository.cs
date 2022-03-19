@@ -245,5 +245,27 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
         /// </summary>
         public async Task<List<T>> ToListAsync<T>() where T : class
             => await _context.Set<T>().ToListAsync();
+
+        /// <summary>
+        /// Obtém todos os registros da tabela da entidade em questão em forma de <see cref="ListaPaginada{T}"/>
+        /// </summary>
+        /// <param name="pagina">Página de registros</param>
+        /// <param name="quantidadeRegistros">Quantidade de registros por página</param>
+        /// <returns></returns>
+        public async Task<ListaPaginada<T>> ToListAsync<T>(int pagina, int quantidadeRegistros) where T : class
+        {
+            var registrosJaObtidos = pagina * quantidadeRegistros;
+
+            var itens = await _context.Set<T>()
+                    .Skip(registrosJaObtidos)
+                    .Take(quantidadeRegistros)
+                    .ToListAsync();
+
+            var quantidadeTotalRegistros = await _context.Set<T>().CountAsync();
+            var quantidadePaginas = (double)quantidadeTotalRegistros / quantidadeRegistros;
+            var quantidadeTotalPaginas = (int)Math.Ceiling(quantidadePaginas);
+
+            return new ListaPaginada<T>(itens, pagina, quantidadeTotalPaginas);
+        }
     }
 }

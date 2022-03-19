@@ -67,5 +67,12 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
         /// Obtém todos os registros da tabela da entidade em questão
         /// </summary>
         Task<List<T>> ToListAsync<T>() where T : class;
+        /// <summary>
+        /// Obtém todos os registros da tabela da entidade em questão em forma de <see cref="ListaPaginada{T}"/>
+        /// </summary>
+        /// <param name="pagina">Página de registros</param>
+        /// <param name="quantidadeRegistros">Quantidade de registros por página</param>
+        /// <returns></returns>
+        Task<ListaPaginada<T>> ToListAsync<T>(int pagina, int quantidadeRegistros) where T : class;
     }
 }
