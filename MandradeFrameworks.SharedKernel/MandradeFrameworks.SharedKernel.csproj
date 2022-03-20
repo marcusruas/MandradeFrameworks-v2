@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>MandradeFrameworks.SharedKernel</PackageId>
-    <Version>1.0.9</Version>
+    <Version>1.0.12</Version>
     <description>Pacote com classes para auxiliar o desenvolvimento de uma API.</description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>

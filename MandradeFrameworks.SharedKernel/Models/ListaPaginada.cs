@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MandradeFrameworks.SharedKernel.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,60 +11,59 @@ namespace MandradeFrameworks.SharedKernel.Models
     /// </summary>
     public class ListaPaginada<T> where T : class
     {
-        public ListaPaginada(IEnumerable<T> itens, int paginaAtual, int quantidadeTotalRegistros)
+        public ListaPaginada(IEnumerable<T> itens, int paginaAtual, int quantidadeTotalRegistros, int quantidadeRegistrosSolicitada)
         {
             Itens = itens;
             PaginaAtual = paginaAtual;
             QuantidadeTotalRegistros = quantidadeTotalRegistros;
+            QuantidadeRegistrosSolicitada = quantidadeRegistrosSolicitada;
+
+            ValidarPaginacao();
         }
 
         public IEnumerable<T> Itens { get; }
-        /// <summary>
-        /// Página atual da pesquisa
-        /// </summary>
-        public int PaginaAtual { get; }
-        /// <summary>
-        /// Retorna a quantidade total de registros da pesquisa
-        /// </summary>
-        public int QuantidadeTotalRegistros { get; }
         /// <summary>
         /// Página anterior da pesquisa
         /// </summary>
         public int? PaginaAnterior { get => ObterPaginaAnterior(); }
         /// <summary>
+        /// Página atual da pesquisa
+        /// </summary>
+        public int PaginaAtual { get; }
+        /// <summary>
         /// Próxima página da pesquisa
         /// </summary>
         public int? ProximaPagina { get => ObterProximaPagina(); }
+        /// <summary>
+        /// Retorna se a página atual é a primeira página
+        /// </summary>
+        public bool PrimeiraPagina { get => PaginaAtual == 1; }
+        /// <summary>
+        /// Retorna se a página atual é a última página
+        /// </summary>
+        public bool UltimaPagina { get => PaginaAtual == QuantidadeTotalPaginas; }
+        /// <summary>
+        /// Retorna a quantidade total de registros da pesquisa
+        /// </summary>
+        public int QuantidadeTotalRegistros { get; }
         /// <summary>
         /// Quantidade total de páginas da pesquisa
         /// </summary>
         public int QuantidadeTotalPaginas { get => ObterQuantidadeTotalPaginas(); }
         /// <summary>
-        /// Retorna se a página atual é a primeira página
+        /// Quantidade de registros solicitados
         /// </summary>
-        public bool PrimeiraPagina { get => PaginaAtual <= 1; }
-        /// <summary>
-        /// Retorna se a página atual é a última página
-        /// </summary>
-        public bool UltimaPagina { get => PaginaAtual >= QuantidadeTotalPaginas;  }
+        private int QuantidadeRegistrosSolicitada { get; }
 
         private int ObterQuantidadeTotalPaginas()
         {
-            var quantidadeRegistrosAtual = Itens.Count();
-
-            if (quantidadeRegistrosAtual == 0)
-                return 1;
-
-            var quantidadetotalPaginas = (double)QuantidadeTotalRegistros / quantidadeRegistrosAtual;
-            return (int)Math.Ceiling(quantidadetotalPaginas);
+            var quantidadetotalPaginas = (double)QuantidadeTotalRegistros / QuantidadeRegistrosSolicitada;
+            return (int) Math.Ceiling(quantidadetotalPaginas);
         }
 
         private int? ObterPaginaAnterior()
         {
             if (PrimeiraPagina)
-                return null;
-
-            if (PaginaAtual - 1 >= QuantidadeTotalPaginas)
                 return null;
 
             return PaginaAtual - 1;
@@ -74,10 +74,18 @@ namespace MandradeFrameworks.SharedKernel.Models
             if (UltimaPagina)
                 return null;
 
-            if (PaginaAtual + 1 < 1)
-                return null;
-
             return PaginaAtual + 1;
+        }
+
+        private void ValidarPaginacao()
+        {
+            int UltimaPagina = ObterQuantidadeTotalPaginas();
+
+            if (QuantidadeRegistrosSolicitada <= 0)
+                throw new PaginacaoInvalidaException();
+
+            if (PaginaAtual < 1 || PaginaAtual > UltimaPagina)
+                throw new PaginacaoInvalidaException(1, UltimaPagina);
         }
     }
 }

@@ -195,10 +195,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
         public async Task<ListaPaginada<T>> ConsultaComSpecification<T>(BaseSpecificationPaginated<T> specification) where T : class
         {
             if (specification.Pagina == 0 || specification.QuantidadeRegistros == 0)
-                _mensageria.AdicionarMensagemErro("Consulta utilizando paginação não pode ter Página 0 ou Quantidade de Registros 0.");
-
-            if (_mensageria.PossuiErros())
-                return null;
+                _mensageria.RetornarMensagemErro("Consulta utilizando paginação não pode ter Quantidade de Registros nem Página 0.");
 
             var query = AdicionarSpecification<T>(specification);
             var registrosJaObtidos = (specification.Pagina * specification.QuantidadeRegistros) - specification.QuantidadeRegistros;
@@ -209,7 +206,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
                     .ToListAsync();
 
             var quantidadeTotalRegistros = await query.CountAsync();
-            return new ListaPaginada<T>(itens, specification.Pagina, quantidadeTotalRegistros);
+            return new ListaPaginada<T>(itens, specification.Pagina, quantidadeTotalRegistros, specification.QuantidadeRegistros);
         }
 
         private IQueryable<T> AdicionarSpecification<T>(BaseSpecification<T> specification) where T : class
@@ -251,6 +248,9 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
         /// <returns></returns>
         public async Task<ListaPaginada<T>> ToListAsync<T>(int pagina, int quantidadeRegistros) where T : class
         {
+            if (pagina == 0 || quantidadeRegistros == 0)
+                _mensageria.RetornarMensagemErro("Consulta utilizando paginação não pode ter Quantidade de Registros nem Página 0.");
+
             var registrosJaObtidos = (pagina * quantidadeRegistros) - quantidadeRegistros;
 
             var itens = await _context.Set<T>()
@@ -259,7 +259,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
                     .ToListAsync();
 
             var quantidadeTotalRegistros = await _context.Set<T>().CountAsync();
-            return new ListaPaginada<T>(itens, pagina, quantidadeTotalRegistros);
+            return new ListaPaginada<T>(itens, pagina, quantidadeTotalRegistros, quantidadeRegistros);
         }
     }
 }
