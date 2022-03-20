@@ -42,8 +42,11 @@ namespace MandradeFrameworks.SharedKernel.Models
         private int ObterQuantidadeTotalPaginas()
         {
             var quantidadeRegistrosAtual = Itens.Count();
-            var quantidadetotalPaginas = (double) QuantidadeTotalRegistros / quantidadeRegistrosAtual;
-            
+
+            if (quantidadeRegistrosAtual == 0)
+                return 1;
+
+            var quantidadetotalPaginas = (double)QuantidadeTotalRegistros / quantidadeRegistrosAtual;
             return (int)Math.Ceiling(quantidadetotalPaginas);
         }
     }
