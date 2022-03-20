@@ -63,12 +63,18 @@ namespace MandradeFrameworks.SharedKernel.Models
             if (PrimeiraPagina)
                 return null;
 
+            if (PaginaAtual - 1 >= QuantidadeTotalPaginas)
+                return null;
+
             return PaginaAtual - 1;
         }
 
         private int? ObterProximaPagina()
         {
             if (UltimaPagina)
+                return null;
+
+            if (PaginaAtual + 1 < 1)
                 return null;
 
             return PaginaAtual + 1;
