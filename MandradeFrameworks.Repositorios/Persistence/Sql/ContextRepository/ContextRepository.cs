@@ -201,7 +201,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
                 return null;
 
             var query = AdicionarSpecification<T>(specification);
-            var registrosJaObtidos = specification.Pagina * specification.QuantidadeRegistros;
+            var registrosJaObtidos = (specification.Pagina * specification.QuantidadeRegistros) - specification.QuantidadeRegistros;
 
             var itens = await query
                     .Skip(registrosJaObtidos)
@@ -209,10 +209,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
                     .ToListAsync();
 
             var quantidadeTotalRegistros = await query.CountAsync();
-            var quantidadePaginas = (double) quantidadeTotalRegistros / specification.QuantidadeRegistros;
-            var quantidadeTotalPaginas = (int) Math.Ceiling(quantidadePaginas);
-
-            return new ListaPaginada<T>(itens, specification.Pagina, quantidadeTotalPaginas);
+            return new ListaPaginada<T>(itens, specification.Pagina, quantidadeTotalRegistros);
         }
 
         private IQueryable<T> AdicionarSpecification<T>(BaseSpecification<T> specification) where T : class
@@ -254,7 +251,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
         /// <returns></returns>
         public async Task<ListaPaginada<T>> ToListAsync<T>(int pagina, int quantidadeRegistros) where T : class
         {
-            var registrosJaObtidos = pagina * quantidadeRegistros;
+            var registrosJaObtidos = (pagina * quantidadeRegistros) - quantidadeRegistros;
 
             var itens = await _context.Set<T>()
                     .Skip(registrosJaObtidos)
@@ -262,10 +259,7 @@ namespace MandradeFrameworks.Repositorios.Persistence.Sql.ContextRepository
                     .ToListAsync();
 
             var quantidadeTotalRegistros = await _context.Set<T>().CountAsync();
-            var quantidadePaginas = (double)quantidadeTotalRegistros / quantidadeRegistros;
-            var quantidadeTotalPaginas = (int)Math.Ceiling(quantidadePaginas);
-
-            return new ListaPaginada<T>(itens, pagina, quantidadeTotalPaginas);
+            return new ListaPaginada<T>(itens, pagina, quantidadeTotalRegistros);
         }
     }
 }

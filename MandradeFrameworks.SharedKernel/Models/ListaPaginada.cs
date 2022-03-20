@@ -10,11 +10,11 @@ namespace MandradeFrameworks.SharedKernel.Models
     /// </summary>
     public class ListaPaginada<T> where T : class
     {
-        public ListaPaginada(IEnumerable<T> itens, int paginaAtual, int quantidadePaginas)
+        public ListaPaginada(IEnumerable<T> itens, int paginaAtual, int quantidadeTotalRegistros)
         {
             Itens = itens;
             PaginaAtual = paginaAtual;
-            QuantidadePaginas = quantidadePaginas;
+            QuantidadeTotalRegistros = quantidadeTotalRegistros;
         }
 
         public IEnumerable<T> Itens { get; }
@@ -23,13 +23,13 @@ namespace MandradeFrameworks.SharedKernel.Models
         /// </summary>
         public int PaginaAtual { get; }
         /// <summary>
-        /// Quantidade total de páginas da pesquisa
-        /// </summary>
-        public int QuantidadePaginas { get; }
-        /// <summary>
         /// Retorna a quantidade total de registros da pesquisa
         /// </summary>
-        public int QuantidadeTotalRegistros { get => Itens.Count() * QuantidadePaginas; }
+        public int QuantidadeTotalRegistros { get; }
+        /// <summary>
+        /// Quantidade total de páginas da pesquisa
+        /// </summary>
+        public int QuantidadeTotalPaginas { get => ObterQuantidadeTotalPaginas(); }
         /// <summary>
         /// Retorna se a página atual é a primeira página
         /// </summary>
@@ -37,6 +37,14 @@ namespace MandradeFrameworks.SharedKernel.Models
         /// <summary>
         /// Retorna se a página atual é a última página
         /// </summary>
-        public bool UltimaPagina { get => PaginaAtual == QuantidadePaginas;  }
+        public bool UltimaPagina { get => PaginaAtual == QuantidadeTotalPaginas;  }
+
+        private int ObterQuantidadeTotalPaginas()
+        {
+            var quantidadeRegistrosAtual = Itens.Count();
+            var quantidadetotalPaginas = (double) QuantidadeTotalRegistros / quantidadeRegistrosAtual;
+            
+            return (int)Math.Ceiling(quantidadetotalPaginas);
+        }
     }
 }
