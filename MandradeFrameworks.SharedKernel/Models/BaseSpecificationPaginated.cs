@@ -13,6 +13,12 @@ namespace MandradeFrameworks.SharedKernel.Models
             QuantidadeRegistros = quantidadeRegistros;
         }
 
+        public BaseSpecificationPaginated(Expression<Func<T, bool>> criteria, int pagina, int quantidadeRegistros) : base(criteria)
+        {
+            Pagina = pagina;
+            QuantidadeRegistros = quantidadeRegistros;
+        }
+
         /// <summary>
         /// Página a ser pesquisada
         /// </summary>
