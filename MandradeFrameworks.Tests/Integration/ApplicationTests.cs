@@ -67,7 +67,7 @@ namespace MandradeFrameworks.Tests.Integration
 
             _nomeInstanciaBanco = Guid.NewGuid().ToString().Replace("-", "");
 
-            string sqlQuery = $"CREATE DATABASE {_nomeInstanciaBanco}";
+            string sqlQuery = $"CREATE DATABASE Logs_{_nomeInstanciaBanco}";
             using var conexao = new SqlConnection(_connectionStringMaster);
                 conexao.Execute(sqlQuery);            
         }
