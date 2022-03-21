@@ -1,4 +1,5 @@
 ﻿using MandradeFrameworks.Tests.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -8,8 +9,10 @@ namespace MandradeFrameworks.Tests.Configuration
 {
     public static class TestsConfiguration
     {
-        public static IServiceCollection AdicionarTestes(this IServiceCollection servicos, ConfiguracoesTestes configuracoes)
+        public static IServiceCollection AdicionarTestes(this IServiceCollection servicos, string connectionString)
         {
+            var configuracoes = new ConfiguracoesTestes(connectionString);
+
             servicos.AddSingleton(configuracoes);
             return servicos;
         }

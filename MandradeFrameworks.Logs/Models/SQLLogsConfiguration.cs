@@ -4,13 +4,14 @@ using System.Text;
 
 namespace MandradeFrameworks.Logs.Models
 {
-    internal class SQLLogsConfiguration
+    public class SQLLogsConfiguration
     {
-        public SQLLogsConfiguration(string connectionString, string schema, string tabela)
+        public SQLLogsConfiguration(string connectionString, string tabela, string schema = "dbo", bool criarTabelaSeNaoExistir = true)
         {
             ConnectionString = connectionString;
             Schema = schema;
             Tabela = tabela;
+            CriarTabelaSeNaoExistir = criarTabelaSeNaoExistir;
         }
 
         /// <summary>
@@ -25,5 +26,6 @@ namespace MandradeFrameworks.Logs.Models
         /// Nome da tabela que irá gravar os logs da aplicação.
         /// </summary>
         public string Tabela { get; set; }
+        public bool CriarTabelaSeNaoExistir { get; set; }
     }
 }

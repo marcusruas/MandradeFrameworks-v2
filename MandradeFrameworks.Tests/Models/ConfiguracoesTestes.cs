@@ -4,17 +4,16 @@ using System.Text;
 
 namespace MandradeFrameworks.Tests.Models
 {
-    public class ConfiguracoesTestes
+    internal class ConfiguracoesTestes
     {
-        public ConfiguracoesTestes() {  }
+        public ConfiguracoesTestes(string connectionString)
+        {
+            ConnectionString = connectionString;
+        }
 
         /// <summary>
         /// Connection string da base que será criada para os testes de integração
         /// </summary>
         public string ConnectionString { get; set; }
-        /// <summary>
-        /// Token que será inserido por padrão no client
-        /// </summary>
-        public string TokenPadraoTestes { get; set; }
     }
 }

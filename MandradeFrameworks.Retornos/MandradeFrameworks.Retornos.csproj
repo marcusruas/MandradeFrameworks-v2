@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>MandradeFrameworks.Retornos</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <description>Pacote com classes de padronização de retorno de APIS.</description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>

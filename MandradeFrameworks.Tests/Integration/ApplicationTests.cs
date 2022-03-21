@@ -17,9 +17,8 @@ namespace MandradeFrameworks.Tests.Integration
     where TStartup : class
     where TContext : DbContext
     {
-        public ConfiguracoesTestes Configuracoes { get; private set; }
-
         private string _nomeInstanciaBanco;
+        private string _connectionStringMaster;
         private string _connectionStringProcessada;
         private Func<TContext, Task> _configuracoesDb;
 
@@ -33,7 +32,9 @@ namespace MandradeFrameworks.Tests.Integration
         {
             builder.ConfigureServices(services =>
             {
-                RemoverConfigsDbContext(services);
+                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<TContext>));
+                if (descriptor != null)
+                    services.Remove(descriptor);
 
                 var serviceProvider = new ServiceCollection()
                     .AddEntityFrameworkSqlServer()
@@ -44,28 +45,13 @@ namespace MandradeFrameworks.Tests.Integration
             });
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-            _connectionStringProcessada = _connectionStringProcessada.Replace(_nomeInstanciaBanco, "master");
-            using var conexao = new SqlConnection(_connectionStringProcessada);
-            conexao.Execute(QueryDisposeDb());
-        }
-
         internal void AdicionarSetupBanco(Func<TContext, Task> setup)
             => _configuracoesDb = setup;
 
-        private void RemoverConfigsDbContext(IServiceCollection services)
-        {
-            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<TContext>));
-            if (descriptor != null)
-                services.Remove(descriptor);
-        }
-
         private void AdicionarDbContext(IServiceScope scope, IServiceCollection services)
         {
-            Configuracoes = scope.ServiceProvider.ObterServico<ConfiguracoesTestes>();
-            GerarDatabaseConnectionString();
+            var configuracoes = scope.ServiceProvider.ObterServico<ConfiguracoesTestes>();
+            GerarDatabaseConnectionString(configuracoes);
             
             services.AddDbContext<TContext>(options => options.UseSqlServer(_connectionStringProcessada));
 
@@ -74,14 +60,23 @@ namespace MandradeFrameworks.Tests.Integration
             _configuracoesDb(context);
         }
 
-        private void GerarDatabaseConnectionString()
+        private void GerarDatabaseConnectionString(ConfiguracoesTestes configuracoes)
         {
-            _nomeInstanciaBanco = Guid.NewGuid().ToString().Replace("-", "");
-            string sqlQuery = $"CREATE DATABASE {_nomeInstanciaBanco}";
+            _connectionStringMaster = configuracoes.ConnectionString;
+            _connectionStringProcessada = _connectionStringMaster.Replace("master", _nomeInstanciaBanco);
 
-            using var conexao = new SqlConnection(Configuracoes.ConnectionString);
-            conexao.Execute(sqlQuery);
-            _connectionStringProcessada = Configuracoes.ConnectionString.Replace("master", _nomeInstanciaBanco);
+            _nomeInstanciaBanco = Guid.NewGuid().ToString().Replace("-", "");
+
+            string sqlQuery = $"CREATE DATABASE {_nomeInstanciaBanco}";
+            using var conexao = new SqlConnection(_connectionStringMaster);
+                conexao.Execute(sqlQuery);            
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            using var conexao = new SqlConnection(_connectionStringMaster);
+            conexao.Execute(QueryDisposeDb());
         }
 
         private string QueryDisposeDb() =>

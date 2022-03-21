@@ -14,27 +14,21 @@ namespace MandradeFrameworks.Logs.Configuration
     public static class LogsConfiguration
     {
         /// <summary>
-        /// Método para adicionar logs na aplicação.
+        /// Método para adicionar logs em tabela SQL na aplicação.
         /// </summary>
-        /// <param name="configuration">Objeto de configurações da aplicação</param>
-        /// <param name="tabela">Nome da tabela para gravação de logs.</param>
-        /// <param name="schema">Schema da Tabela para gravação de logs. Caso não preenchido será 'dbo'</param>
-        /// <param name="criarTabelaSeNaoExistir">Define se caso a tabela solicitada para gravação de logs não exista, ela será criada no DB da ConnectionString</param>
-        public static void AdicionarLogs(IConfiguration configuration, string tabela, string schema = "dbo", bool criarTabelaSeNaoExistir = true)
+        /// <param name="configuration">Objeto de configurações para aplicação de logs em SQL</param>
+        public static void AdicionarLogsSQL(SQLLogsConfiguration configuration)
         {
-            string chaveCnnLogs = "Logs";
-            string connectionStringLogs = configuration.GetConnectionString(chaveCnnLogs);
+            if (string.IsNullOrWhiteSpace(configuration.ConnectionString))
+                throw new ArgumentException($"Connection String da base de logs não pode ser vazio.");
 
-            var configsLogs = new SQLLogsConfiguration(connectionStringLogs, schema, tabela);
-
-            if (string.IsNullOrWhiteSpace(configsLogs.ConnectionString))
-                throw new ArgumentException($"Connection String da base de logs não pode ser vazio. A ConnectionString deve estar no objeto do AppSettings, chave '${chaveCnnLogs}'");
-
-            if (string.IsNullOrWhiteSpace(configsLogs.Tabela))
+            if (string.IsNullOrWhiteSpace(configuration.Tabela))
                 throw new ArgumentException("Nome da tabela de logs não pode ser vazio.");
 
-            GerarTabelaSQL(configsLogs);
-            CriarInstanciaSerilog(configsLogs);
+            if (configuration.CriarTabelaSeNaoExistir)
+                GerarTabelaSQL(configuration);
+
+            CriarInstanciaSerilog(configuration);
         }
 
         private static void GerarTabelaSQL(SQLLogsConfiguration configs)

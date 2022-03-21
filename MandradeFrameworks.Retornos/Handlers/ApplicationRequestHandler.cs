@@ -26,7 +26,7 @@ namespace MandradeFrameworks.Retornos.Handlers
             _usuarioAutenticado = services.ObterServico<IUsuarioAutenticado>();
         }
 
-        private IServiceProvider _services;
+        private readonly IServiceProvider _services;
 
         protected readonly IMensageria _mensageria;
         protected readonly IUsuarioAutenticado _usuarioAutenticado;
