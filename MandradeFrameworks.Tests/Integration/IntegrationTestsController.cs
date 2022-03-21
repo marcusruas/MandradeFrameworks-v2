@@ -7,10 +7,12 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace MandradeFrameworks.Tests.Integration
 {
     public abstract class IntegrationTestsController<TStartup, TContext>
+    : IClassFixture<ApplicationTests<TStartup, TContext>>
     where TStartup : class 
     where TContext : DbContext
     {
