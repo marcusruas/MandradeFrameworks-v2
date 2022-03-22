@@ -38,7 +38,7 @@ namespace MandradeFrameworks.Tests.Integration
                 using var scope = provider.CreateScope();
                 {
                     var context = scope.ServiceProvider.GetRequiredService<TContext>();
-                    context.Database.Migrate();
+                    context.Database.EnsureCreated();
                     _configuracoesDb(context);
                 }
             });
