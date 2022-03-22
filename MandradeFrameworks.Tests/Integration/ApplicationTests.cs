@@ -32,42 +32,32 @@ namespace MandradeFrameworks.Tests.Integration
         {
             builder.ConfigureServices(services =>
             {
-                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<TContext>));
-                if (descriptor != null)
-                    services.Remove(descriptor);
+                string cnn = "Server=DEV\\SQLEXPRESS;Database=master;Trusted_Connection=True;";
+                var configs = new ConfiguracoesTestes(cnn);
 
-                var serviceProvider = new ServiceCollection()
-                    .AddEntityFrameworkSqlServer()
-                    .BuildServiceProvider();
+                GerarDatabaseConnectionString(configs);
 
-                using var scope = services.BuildServiceProvider().CreateScope();
-                    AdicionarDbContext(scope, services);
+                var provider = services.BuildServiceProvider();
+                using var scope = provider.CreateScope();
+                {
+                    var context = scope.ServiceProvider.GetRequiredService<TContext>();
+                    context.Database.Migrate();
+                    _configuracoesDb(context);
+                }
             });
         }
 
         internal void AdicionarSetupBanco(Func<TContext, Task> setup)
             => _configuracoesDb = setup;
 
-        private void AdicionarDbContext(IServiceScope scope, IServiceCollection services)
-        {
-            var configuracoes = scope.ServiceProvider.ObterServico<ConfiguracoesTestes>();
-            GerarDatabaseConnectionString(configuracoes);
-            
-            services.AddDbContext<TContext>(options => options.UseSqlServer(_connectionStringProcessada));
-
-            var context = scope.ServiceProvider.GetRequiredService<TContext>();
-            context.Database.Migrate();
-            _configuracoesDb(context);
-        }
-
         private void GerarDatabaseConnectionString(ConfiguracoesTestes configuracoes)
         {
             _connectionStringMaster = configuracoes.ConnectionString;
             _connectionStringProcessada = _connectionStringMaster.Replace("master", _nomeInstanciaBanco);
 
-            _nomeInstanciaBanco = Guid.NewGuid().ToString().Replace("-", "");
+            _nomeInstanciaBanco = $"Logs_{Guid.NewGuid().ToString().Replace("-", "")}";
 
-            string sqlQuery = $"CREATE DATABASE Logs_{_nomeInstanciaBanco}";
+            string sqlQuery = $"CREATE DATABASE {_nomeInstanciaBanco}";
             using var conexao = new SqlConnection(_connectionStringMaster);
                 conexao.Execute(sqlQuery);            
         }

@@ -48,7 +48,6 @@ namespace MandradeFrameworks.Repositorios.Configuration
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var tiposParaRegistrar = new List<Type>();
-
             foreach(var assembly in assemblies)
             {
                 var tipo = assembly.GetTypes()
@@ -59,7 +58,7 @@ namespace MandradeFrameworks.Repositorios.Configuration
                 tiposParaRegistrar.AddRange(tipo);
             }
 
-            foreach(var tipo in tiposParaRegistrar)
+            foreach (var tipo in tiposParaRegistrar)
             {
                 dynamic instanciaTipo = Activator.CreateInstance(tipo);
                 modelBuilder.ApplyConfiguration(instanciaTipo);
