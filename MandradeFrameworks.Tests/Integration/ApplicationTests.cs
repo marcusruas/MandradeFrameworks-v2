@@ -17,9 +17,6 @@ namespace MandradeFrameworks.Tests.Integration
     where TStartup : class
     where TContext : DbContext
     {
-        private string _nomeInstanciaBanco;
-        private string _connectionStringMaster;
-        private string _connectionStringProcessada;
         private Func<TContext, Task> _configuracoesDb;
 
         protected override IWebHostBuilder CreateWebHostBuilder()
@@ -32,10 +29,10 @@ namespace MandradeFrameworks.Tests.Integration
         {
             builder.ConfigureServices(services =>
             {
-                string cnn = "Server=DEV\\SQLEXPRESS;Database=master;Trusted_Connection=True;";
-                var configs = new ConfiguracoesTestes(cnn);
+                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<TContext>));
+                services.Remove(descriptor);
 
-                GerarDatabaseConnectionString(configs);
+                services.AddDbContext<TContext>(options => options.UseInMemoryDatabase("Testes"));
 
                 var provider = services.BuildServiceProvider();
                 using var scope = provider.CreateScope();
@@ -49,32 +46,5 @@ namespace MandradeFrameworks.Tests.Integration
 
         internal void AdicionarSetupBanco(Func<TContext, Task> setup)
             => _configuracoesDb = setup;
-
-        private void GerarDatabaseConnectionString(ConfiguracoesTestes configuracoes)
-        {
-            _connectionStringMaster = configuracoes.ConnectionString;
-            _connectionStringProcessada = _connectionStringMaster.Replace("master", _nomeInstanciaBanco);
-
-            _nomeInstanciaBanco = $"Logs_{Guid.NewGuid().ToString().Replace("-", "")}";
-
-            string sqlQuery = $"CREATE DATABASE {_nomeInstanciaBanco}";
-            using var conexao = new SqlConnection(_connectionStringMaster);
-                conexao.Execute(sqlQuery);            
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-            using var conexao = new SqlConnection(_connectionStringMaster);
-            conexao.Execute(QueryDisposeDb());
-        }
-
-        private string QueryDisposeDb() =>
-            $@" DECLARE @PROCESSOS_EXECUTAR varchar(1000) = '';  
-                SELECT @PROCESSOS_EXECUTAR = @PROCESSOS_EXECUTAR + 'KILL ' + CONVERT(varchar(5), session_id) + ';'  
-                FROM sys.dm_exec_sessions
-                WHERE database_id  = db_id('{_nomeInstanciaBanco}')
-                EXEC (@PROCESSOS_EXECUTAR)
-                DROP DATABASE {_nomeInstanciaBanco}";
     }
 }

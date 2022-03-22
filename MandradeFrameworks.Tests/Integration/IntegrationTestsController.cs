@@ -16,12 +16,15 @@ namespace MandradeFrameworks.Tests.Integration
     where TStartup : class 
     where TContext : DbContext
     {
-        protected IntegrationTestsController(ApplicationTests<TStartup, TContext> app)
+        protected IntegrationTestsController(
+            ApplicationTests<TStartup, TContext> app,
+            Func<TContext, Task> setupDb
+        )
         {
+            app.AdicionarSetupBanco(setupDb);
+
             Cliente = app.CreateClient();
             UrlBase = $"{app.Server.BaseAddress}{UrlControllerBase()}";
-
-            app.AdicionarSetupBanco(SetupDb());
         }
 
         protected readonly HttpClient Cliente;
@@ -32,11 +35,6 @@ namespace MandradeFrameworks.Tests.Integration
         /// </summary>
         /// <returns></returns>
         protected abstract string UrlControllerBase();
-        /// <summary>
-        /// Configurações que serão inseridas no DB ao iniciar a base de testes
-        /// </summary>
-        /// <returns></returns>
-        protected abstract Func<TContext, Task> SetupDb();
 
         /// <summary>
         /// Gera um objeto <see cref="HttpContent"/> com o objeto passado como parâmetro convertido para body da requisição.
