@@ -50,7 +50,7 @@ namespace MandradeFrameworks.Autenticacao.Filters
             if (string.IsNullOrWhiteSpace(token))
                 throw new TokenInvalidoException();
 
-            if (TokenValido(token))
+            if (!TokenValido(token))
                 throw new TokenInvalidoException();
 
             GerarUsuarioCadastrado(context);
@@ -81,10 +81,10 @@ namespace MandradeFrameworks.Autenticacao.Filters
 
         private void ValidarPermissoesObrigatorias()
         {
-            if (_permissoesObrigatorias.Any())
+            if (!_permissoesObrigatorias.Any())
                 return;
 
-            if (_usuarioAutenticado.Permissoes is null || _usuarioAutenticado.Permissoes.Any())
+            if (_usuarioAutenticado.Permissoes is null || !_usuarioAutenticado.Permissoes.Any())
                 throw new NaoAutorizadoException(_permissoesObrigatorias);
 
             bool naoPossuiPermissoes = _permissoesObrigatorias
