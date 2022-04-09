@@ -13,19 +13,16 @@ namespace MandradeFrameworks.SharedKernel.Usuario
         public UsuarioAutenticado()
         {
             NomeCompleto = NOME_USUARIO_GENERICO;
-            Funcional = FUNCIONAL_USUARIO_GENERICO;
             Permissoes = new List<string>();
         }
-
+        
         public string NomeCompleto { get; private set; }
-        public Funcional Funcional { get; private set; }
         public IEnumerable<string> Permissoes { get; private set; }
 
         private const string NOME_USUARIO_GENERICO = "Token Anônimo";
-        private const string FUNCIONAL_USUARIO_GENERICO = "011111111";
 
         public bool EstaAutenticado()
-            => NomeCompleto != NOME_USUARIO_GENERICO && Funcional != FUNCIONAL_USUARIO_GENERICO;
+            => NomeCompleto != NOME_USUARIO_GENERICO;
 
         public bool PossuiPermissao(string permissao)
         {
@@ -41,11 +38,9 @@ namespace MandradeFrameworks.SharedKernel.Usuario
                 throw new TokenInvalidoException();
 
             string nome = ObterPropriedade(token, "nome");
-            Funcional funcional = Convert.ToInt32(ObterPropriedade(token, "userId"));
             IEnumerable<string> permissoes = ObterPropriedade(token, "api_roles").Split(",");
 
             NomeCompleto = nome;
-            Funcional = funcional;
             Permissoes = permissoes;
         }
 

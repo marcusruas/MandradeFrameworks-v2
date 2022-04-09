@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace MandradeFrameworks.Tests.UnitTests
 {
@@ -13,10 +14,10 @@ namespace MandradeFrameworks.Tests.UnitTests
     {
         public UnitTestsClass()
         {
-            _faker = new Faker("pt_BR");
+            _cancellationToken = new CancellationToken();
         }
-
-        protected Faker _faker;
+        
+        protected CancellationToken _cancellationToken;
 
         protected static void MensageriaDeveConterFalhaValidacao(IMensageria mensageria, string mensagem)
             => mensageria.Mensagens

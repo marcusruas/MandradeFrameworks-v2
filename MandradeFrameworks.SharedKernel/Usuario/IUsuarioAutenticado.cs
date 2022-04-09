@@ -13,10 +13,6 @@ namespace MandradeFrameworks.SharedKernel.Usuario
         /// </summary>
         string NomeCompleto { get; }
         /// <summary>
-        /// Funcional do usuário autenticado
-        /// </summary>
-        Funcional Funcional { get; }
-        /// <summary>
         /// Permissões que o usuário possui
         /// </summary>
         IEnumerable<string> Permissoes { get; }

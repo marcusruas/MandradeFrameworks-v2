@@ -7,7 +7,7 @@ using System.Text;
 
 namespace MandradeFrameworks.Mensagens.Services
 {
-    internal class Mensageria : IMensageria
+    public class Mensageria : IMensageria
     {
         public Mensageria()
         {
