@@ -9,13 +9,20 @@ namespace MandradeFrameworks.Tests.Models
         public StubGenerator()
         {
             _fakerPTBR = new Faker("pt_BR");
+            _fakerObjeto = new Faker<T>();
             _random = new Random();
         }
+
         protected Faker _fakerPTBR;
+        protected Faker<T> _fakerObjeto;
         protected Random _random;
 
-        public abstract Faker<T> CriarObjeto();
-        public IEnumerable<T> CriarListaObjeto(int quantidadeRegistros = 10)
-            => CriarObjeto().Generate(quantidadeRegistros);
+        public abstract void CriarObjeto();
+
+        public T BuildFirst()
+            => _fakerObjeto.Generate();
+            
+        public IEnumerable<T> BuildToList(int quantidadeRegistros = 10)
+            => _fakerObjeto.Generate(quantidadeRegistros);
     }
 }
